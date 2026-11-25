@@ -1,0 +1,42 @@
+{% extends "delivery/base.html" %}
+{% block content %}
+    <h1 style="color: #e94560; margin-bottom: 20px;">{{ title }}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Основная форма заказа -->
+        <div style="margin-bottom: 20px;">
+            {{ form.as_p }}
+        </div>
+
+        <hr style="border-color: #0f3460; margin: 20px 0;">
+        <h3>Блюда в заказе</h3>
+        
+        <!-- Формсет для блюд -->
+        {{ formset.management_form }}
+        
+        <table style="width: 100%; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>Блюдо</th>
+                    <th>Количество</th>
+                    <th>Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form_item in formset %}
+                <tr>
+                    {{ form_item.id }}
+                    <td>{{ form_item.dish }}</td>
+                    <td>{{ form_item.quantity }}</td>
+                    <td>{{ form_item.DELETE }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit" style="background-color: #2ecc71; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Сохранить заказ</button>
+        <a href="{% url 'delivery:index' %}" style="margin-left: 10px;">Отмена</a>
+    </form>
+{% endblock %}

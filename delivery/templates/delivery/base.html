@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сервис доставки еды</title>
+    <link rel="stylesheet" href="{% static 'delivery/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'delivery:index' %}">🍔 FOOD DELIVERY</a></h1>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Сервис доставки еды. Индивидуальное задание Django.</p>
+    </footer>
+</body>
+</html>

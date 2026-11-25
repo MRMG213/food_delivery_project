@@ -1,0 +1,55 @@
+{% extends "delivery/base.html" %}
+{% block content %}
+    <form method="get">
+        <input name="q" value="{{ request.GET.q }}" placeholder="Поиск по названию или комментарию">
+        <select name="restaurant">
+            <option value="">Все рестораны</option>
+            {% for r in restaurants %}
+                <option value="{{ r.pk }}" {% if request.GET.restaurant == r.pk|stringformat:"s" %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="is_paid">
+            <option value="">Все статусы</option>
+            <option value="1" {% if request.GET.is_paid == "1" %}selected{% endif %}>Оплачен</option>
+            <option value="0" {% if request.GET.is_paid == "0" %}selected{% endif %}>Не оплачен</option>
+        </select>
+        <button type="submit">Найти</button>
+    </form>
+
+    <a href="{% url 'delivery:create' %}" class="btn-create">+ Создать заказ</a>
+
+    {% for order in page_obj %}
+        <div class="card">
+            <h2>{{ order.title }}</h2>
+            <p>{{ order.comment }}</p>
+            <p><b>Ресторан:</b> {{ order.restaurant.name }} | <b>Пользователь:</b> {{ order.user.username }}</p>
+            <p><b>Статус:</b> {% if order.is_paid %}Оплачен{% else %}Не оплачен{% endif %}</p>
+            
+            <!-- Специальный критерий 1: Автоматический расчёт суммы -->
+            <p><b>Сумма:</b> {{ order.total_price }} руб.</p>
+            
+            <!-- Вывод связанных блюд (ManyToMany через OrderItem) -->
+            <p><b>Блюда:</b>
+                {% for item in order.order_items.all %}
+                    {{ item.dish.name }} ({{ item.quantity }} шт.),
+                {% endfor %}
+            </p>
+
+            <a href="{% url 'delivery:update' order.pk %}">Изменить</a> | 
+            <a href="{% url 'delivery:delete' order.pk %}">Удалить</a>
+        </div>
+    {% empty %}
+        <p>Заказов нет.</p>
+    {% endfor %}
+
+    <!-- Пагинация -->
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        {% endif %}
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+        {% endif %}
+    </div>
+{% endblock %}

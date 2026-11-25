@@ -1,0 +1,9 @@
+{% extends "delivery/base.html" %}
+{% block content %}
+    <p>Удалить заказ "{{ order.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Да, удалить</button>
+        <a href="{% url 'delivery:index' %}">Отмена</a>
+    </form>
+{% endblock %}
