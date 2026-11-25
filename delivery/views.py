@@ -3,9 +3,12 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from .models import Order, Restaurant, Dish, OrderItem
 from .forms import OrderForm, OrderItemFormSet
+from django.db.models import Prefetch
 
 def index(request):
-    orders = Order.objects.select_related("restaurant", "user").prefetch_related("order_items__dish")
+    orders = Order.objects.select_related("restaurant", "user").prefetch_related(
+    Prefetch("order_items", queryset=OrderItem.objects.select_related("dish"))
+)
     
     # Фильтры и поиск
     restaurant_id = request.GET.get("restaurant")
